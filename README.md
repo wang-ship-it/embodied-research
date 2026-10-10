@@ -20,13 +20,13 @@ GitHub Pages 配置为从 `main` 分支根目录发布。
 
 ## 资料来源与范围
 
-- OmniVLA-RL：https://arxiv.org/abs/2604.17706 ，摘要及 v2 表1、表2。
+- OmniVLA-RL：https://arxiv.org/abs/2604.17706 ，v2 原论文图1、摘要及表1、表2。
 - EV-WM：https://arxiv.org/abs/2606.13053 ，架构与对应仿真设置。
 - Onto-EV-WM：https://arxiv.org/abs/2608.13901 ，架构及 LIBERO-Plus 注册任务结果。
-- HROS：https://arxiv.org/abs/2609.11225 ，架构概览为依论文整理，非原图。
+- HROS：https://arxiv.org/abs/2609.11225 ，图1由原论文 PDF 高清提取。
 - RegenHarness：https://arxiv.org/abs/2609.27612 ，原架构图与真实巡检案例。
 
-OmniVLA-RL 方法概览为网页绘制的摘要，非原论文图。其 97.6% 与 80.3% 分别来自不同基准。
+五篇论文均展示原论文架构图，可放大或打开原图。OmniVLA-RL 的 97.6% 与 80.3% 分别来自不同基准。
 论文数据不可跨实验协议直接排序。未使用“行业首次”或未验证的联合系统结论。
 RegenHarness 的配置级 RSI 协议不代表权重级自我改进，也未被呈现为已经验证多轮递归增强。
 
