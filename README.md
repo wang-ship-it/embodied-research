@@ -1,0 +1,35 @@
+# 具身智能研究成果主页
+
+五篇论文：OmniVLA-RL、EV-WM、Onto-EV-WM、HROS、RegenHarness。
+纯静态 HTML/CSS/JavaScript，无外部字体、依赖或构建步骤。可用于 GitHub Pages。
+
+## 本地预览
+
+在此目录运行 `python3 -m http.server 8765 --bind 127.0.0.1`，浏览器打开 `http://127.0.0.1:8765`。
+也可直接打开 index.html。
+
+## GitHub Pages 发布
+
+1. 在所选账号创建公开仓库，例如 `embodied-research`。
+2. 将本目录的 index.html、style.css、app.js、assets/ 和 .nojekyll 上传到仓库根目录，保留相对路径。
+3. 仓库 Settings → Pages → Build and deployment → Source 选择 Deploy from a branch，选择 main 与 /(root)，保存。
+4. 等待 Pages 部署完成，以页面实际返回的网址为准。
+
+本项目使用账号 `wang-ship-it` 与仓库 `embodied-research`。
+GitHub Pages 配置为从 `main` 分支根目录发布。
+
+## 资料来源与范围
+
+- OmniVLA-RL：https://arxiv.org/abs/2604.17706 ，摘要及 v2 表1、表2。
+- EV-WM：https://arxiv.org/abs/2606.13053 ，架构与对应仿真设置。
+- Onto-EV-WM：https://arxiv.org/abs/2608.13901 ，架构及 LIBERO-Plus 注册任务结果。
+- HROS：https://arxiv.org/abs/2609.11225 ，架构概览为依论文整理，非原图。
+- RegenHarness：https://arxiv.org/abs/2609.27612 ，原架构图与真实巡检案例。
+
+OmniVLA-RL 方法概览为网页绘制的摘要，非原论文图。其 97.6% 与 80.3% 分别来自不同基准。
+论文数据不可跨实验协议直接排序。未使用“行业首次”或未验证的联合系统结论。
+RegenHarness 的配置级 RSI 协议不代表权重级自我改进，也未被呈现为已经验证多轮递归增强。
+
+assets/ 中架构图来自已有论文资产，8段视频由本地论文素材复制，未修改原始视频。
+EV-WM 展示示范及候选01/02/03短窗口；Onto-EV-WM展示已有示范回放与本体绑定，不是学习修复试验。
+首页背景为 Onto-EV-WM 的仿真展示画面。论文、架构图与八段视频的公开发布已经获得作者确认。
