@@ -11,7 +11,7 @@ function renderBenchmark(key){
 }
 function openTable(key,number){
  const t=originalTables[key].find(t=>t.number===number);if(!t)return;
- showDialog(papers[key].name+' 表 '+number+' 预览',`<div class="dialog-toolbar"><strong>${papers[key].name} / 表 ${number} · ${t.title}</strong><div class="dialog-actions"><a href="${t.source}" target="_blank" rel="noopener">论文原表 ↗</a><button data-close>关闭 ×</button></div></div><div class="table-scroll table-viewer" role="region" aria-label="完整原论文表格，可横向滚动" tabindex="0">${t.tableHtml}</div><div class="original-table-caption">${t.captionHtml}</div><p class="viewer-help">保留原论文全部行列 · 宽表可横向查看 · Esc 关闭</p>`,true);
+ showDialog(papers[key].name+' 表 '+number+' 预览',`<div class="dialog-toolbar"><strong>${papers[key].name} / 表 ${number} · ${t.title}</strong><div class="dialog-actions"><a href="${t.source}" target="_blank" rel="noopener">论文原表 ↗</a><button data-close>关闭 ×</button></div></div><div class="table-scroll table-viewer" role="region" aria-label="完整原论文表格，可横向滚动" tabindex="0">${t.tableHtml}</div><div class="original-table-caption">${t.captionHtml}</div><p class="viewer-help">保留原论文全部行列 · 宽表可横向查看 · Esc 关闭</p>`);
  dialog.classList.add('table-dialog');
 }
 const order=['omni','ev','onto','hros','regen'];
