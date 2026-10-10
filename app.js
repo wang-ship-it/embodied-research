@@ -29,6 +29,7 @@ function selectPaper(key,updateUrl=true){
  if(updateUrl){const url=new URL(location.href);url.searchParams.set('paper',key);history.replaceState(null,'',url)}
 }
 const dialog=document.createElement('dialog');document.body.append(dialog);
+let activeDemoVideo=null;let activeDemoHome=null;
 function showDialog(label,markup,media=false){
  dialog.setAttribute('aria-label',label);dialog.classList.toggle('media-dialog',media);dialog.classList.remove('table-dialog');dialog.innerHTML=markup;
  dialog.querySelector('[data-close]').addEventListener('click',()=>dialog.close());
@@ -38,24 +39,27 @@ function openFigure(p){
  showDialog(p.name+' 架构图预览',`<div class="dialog-toolbar"><strong>${p.name} / 原论文架构图</strong><div class="dialog-actions"><button data-zoom aria-pressed="false">放大细节 ＋</button><a href="assets/${p.image}" target="_blank" rel="noopener">打开原图 ↗</a><button data-close>关闭 ×</button></div></div><div class="figure-viewport"><img src="assets/${p.image}" alt="${p.name} 架构图"></div><p class="viewer-help">点击「放大细节」后可滚动查看 · Esc 关闭</p>`);
  const zoom=dialog.querySelector('[data-zoom]');zoom.addEventListener('click',()=>{const active=dialog.querySelector('.figure-viewport').classList.toggle('zoomed');zoom.setAttribute('aria-pressed',active);zoom.textContent=active?'适应窗口 −':'放大细节 ＋'});
 }
-dialog.addEventListener('close',()=>{dialog.querySelectorAll('video').forEach(v=>v.pause());document.body.classList.remove('modal-open');updateHeroPlayback()});
+dialog.addEventListener('close',()=>{dialog.querySelectorAll('video').forEach(v=>v.pause());if(activeDemoVideo&&activeDemoHome){activeDemoHome.append(activeDemoVideo);activeDemoVideo=null;activeDemoHome=null}document.body.classList.remove('modal-open');updateHeroPlayback()});
 dialog.addEventListener('click',e=>{if(e.target===dialog){const rect=dialog.getBoundingClientRect();if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom)dialog.close()}});
 document.querySelectorAll('[data-paper]').forEach(b=>b.addEventListener('click',()=>selectPaper(b.dataset.paper)));
 document.querySelector('.paper-tabs').addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();let i=order.indexOf(document.activeElement.dataset.paper);i=e.key==='Home'?0:e.key==='End'?order.length-1:(i+(e.key==='ArrowRight'?1:-1)+order.length)%order.length;selectPaper(order[i]);document.querySelector('#tab-'+order[i]).focus()});
 document.querySelectorAll('[data-select]').forEach(a=>a.addEventListener('click',()=>selectPaper(a.dataset.select)));
 const demos=[['示范轨迹','1.75 s'],['PPO 候选 01','1.75 s'],['PPO 候选 02','1.75 s'],['PPO 候选 03','1.75 s'],['黑碗放到盘子上','6.30 s'],['打开中间抽屉','8.40 s'],['将盘子推到炉前','8.80 s'],['打开炉灶','6.10 s'],['HROS 系统演示','18.30 s']];
+function demoVideoSrc(i){return i===8?'assets/hros-web.mp4':`assets/demo-${i}.mp4`}
+function demoPosterSrc(i){return i===8?'assets/hros-poster.jpg':`assets/demo-${i}.png`}
 function updatePlayButton(){document.querySelector('#play-all').textContent=[...document.querySelectorAll('#video-grid video')].some(v=>!v.paused)?'暂停当前展示 Ⅱ':'播放当前展示 ▷'}
 function openDemo(i){
+ const video=document.querySelector(`[data-demo="${i}"]`)?.closest('figure')?.querySelector('video');if(!video)return;
  document.querySelectorAll('#video-grid video').forEach(v=>v.pause());
- showDialog(demos[i][0]+' 视频预览',`<div class="dialog-toolbar"><strong>${demos[i][0]}</strong><div class="dialog-actions"><small>${demos[i][1]} / 实验视频</small><button data-close>关闭 ×</button></div></div><video controls loop muted playsinline poster="assets/demo-${i}.png" aria-label="${demos[i][0]} 放大视频"><source src="assets/demo-${i}.mp4" type="video/mp4"></video><p class="viewer-help">原始实验视频 · 可使用播放器全屏观看 · Esc 关闭</p>`,true);
- dialog.querySelector('video').play().catch(()=>{});
+ showDialog(demos[i][0]+' 视频预览',`<div class="dialog-toolbar"><strong>${demos[i][0]}</strong><div class="dialog-actions"><small>${demos[i][1]} / 实验视频</small>${i===8?'<a href="assets/demo-8.mp4" target="_blank" rel="noopener">原画质 ↗</a>':''}<button data-close>关闭 ×</button></div></div><div class="video-slot"></div><p class="viewer-help">${i===8?'实验视频 · 上方可打开原画质':'原始实验视频'} · 可使用播放器全屏观看 · Esc 关闭</p>`,true);
+ activeDemoVideo=video;activeDemoHome=video.parentElement;dialog.querySelector('.video-slot').append(video);video.play().catch(()=>{});
 }
 function showSeries(series){
  document.querySelectorAll('#video-grid video').forEach(v=>v.pause());const onto=series==='onto';const hros=series==='hros';
  document.querySelectorAll('[data-series]').forEach(b=>{const active=b.dataset.series===series;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',active)});
  document.querySelector('#demo-context').textContent=hros?'Harness Robotic OS（HROS）系统演示 · 视频呈现机器人现场画面、点云与路径、相机视角及运行状态，可放大或全屏观看。':onto?'已有示范回放，展示不同任务的本体绑定与条件验证；不是学习修复试验。保留原始视频与展示标签。':'酒瓶上架任务：一段示范与三个 PPO 候选的短动作窗口。候选池共 32 个，此处展示部分候选；视频本身不含实时评分或接受/拒绝判定。';
  const grid=document.querySelector('#video-grid');grid.classList.toggle('onto',onto);grid.classList.toggle('hros',hros);
- grid.innerHTML=(hros?[8]:onto?[4,5,6,7]:[0,1,2,3]).map(i=>`<figure><div class="video-media"><video controls loop muted playsinline preload="metadata" poster="assets/demo-${i}.png" aria-label="${demos[i][0]}"><source src="assets/demo-${i}.mp4" type="video/mp4"></video></div><figcaption><span>${demos[i][0]}</span><small>${demos[i][1]}</small></figcaption><button class="video-expand" data-demo="${i}" aria-label="放大播放 ${demos[i][0]}">放大播放 ⤢</button></figure>`).join('');
+ grid.innerHTML=(hros?[8]:onto?[4,5,6,7]:[0,1,2,3]).map(i=>`<figure><div class="video-media"><video controls loop muted playsinline preload="metadata" poster="${demoPosterSrc(i)}" aria-label="${demos[i][0]}"><source src="${demoVideoSrc(i)}" type="video/mp4"></video></div><figcaption><span>${demos[i][0]}</span><small>${demos[i][1]}</small></figcaption><button class="video-expand" data-demo="${i}" aria-label="放大播放 ${demos[i][0]}">放大播放 ⤢</button>${i===8?'<a class="video-original" href="assets/demo-8.mp4" target="_blank" rel="noopener">查看原画质 ↗</a>':''}</figure>`).join('');
  grid.querySelectorAll('[data-demo]').forEach(b=>b.addEventListener('click',()=>openDemo(Number(b.dataset.demo))));
  grid.querySelectorAll('video').forEach(v=>{v.addEventListener('play',updatePlayButton);v.addEventListener('pause',updatePlayButton)});updatePlayButton();
 }
